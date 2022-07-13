@@ -1,5 +1,5 @@
 {{#if currentUser}}
-<div class="d-flex row">
+<div class="d-flex row card-body" style="background-color: rgb(255, 255, 255);">
   <div class="col-md-4 ">
     <img class="img-responsive center-block" src="{{currentUser.image}}"
       style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0; border-radius:50%"
@@ -7,29 +7,88 @@
   </div>
   <div class="col-md-8">
     <h1 class="mt-2">{{currentUser.name}}</h1>
-    <h3 class="mt-5">{{currentUser.email}}</h2>
-      {{#ifCond user.id currentUser.id }}
-      <a class="btn btn-block btn-primary mt-5" href="/users/{{user.id}}/edit">
-        Edit
-      </a>
-      {{/ifCond}}
+    <h5 class="mt-1">{{currentUser.email}}</h5>
+    <hr>
+    <ul>
+      <li>{{currentUser.Comments.length}}已評論餐廳</li>
+      <li>{{currentUser.FavoritedRestaurants.length}}收藏的餐廳</li>
+      <li>{{currentUser.Followings.length}}followings</li>
+      <li>{{currentUser.Followers.length}}followers</li>
+    </ul>
+    {{#ifCond user.id currentUser.id }}
+    <a class="btn btn-block btn-primary mt-1" href="/users/{{user.id}}/edit">
+      Edit
+    </a>
+    {{/ifCond}}
   </div>
 </div>
-<div class="card mt-5">
-  <div class="card-header">
-    {{#if currentUser.Comments}}
-    {{currentUser.Comments.length}} 已評論餐廳
-    {{else}}
-    尚未評論餐廳
-    {{/if}}
+
+<div class="d-flex row mt-2">
+  <div class="col-md-4">
+    <div class="card mt-2">
+      <div class="card-header">
+        {{currentUser.Followings.length}} followings
+      </div>
+      <div class="card-body">
+        {{#each currentUser.Followings}}
+        <a href="/users/{{this.id}}" class="text-decoration-none">
+          <img class="img-responsive center-block my-1 mx-3" src="{{this.image}}"
+            style="width: 60px;height: 60px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="card mt-2">
+      <div class="card-header">
+        {{currentUser.Followers.length}} followers
+      </div>
+      <div class="card-body">
+        {{#each currentUser.Followers}}
+        <a href="/users/{{this.id}}" class="text-decoration-none">
+          <img class="img-responsive center-block my-1 mx-3" src="{{this.image}}"
+            style="width: 60px;height: 60px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+
   </div>
-  <div class="card-body">
-    {{#each currentUser.Comments}}
-    <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
-      <img class="img-responsive center-block my-1 mx-3" src="{{this.Restaurant.image}}"
-        style="width: 80px;height: 80px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-    </a>
-    {{/each}}
+
+
+  <div class="col-md-8">
+    <div class="card mt-2">
+      <div class="card-header">
+        {{currentUser.FavoritedRestaurants.length}} 收藏的餐廳
+      </div>
+      <div class="card-body">
+        {{#each currentUser.FavoritedRestaurants}}
+        <a href="/restaurants/{{this.id}}" class="text-decoration-none">
+          <img class="img-responsive center-block my-1 mx-3" src="{{this.image}}"
+            style="width: 60px;height: 60px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="card mt-2">
+      <div class="card-header">
+        {{#if currentUser.Comments}}
+        {{currentUser.Comments.length}} 則評論，{{commentedRests.length}}已評論餐廳
+        {{else}}
+        尚未評論餐廳
+        {{/if}}
+      </div>
+      <div class="card-body">
+        {{#each commentedRests}}
+        <a href="/restaurants/{{this.Restaurant.id}}" class="text-decoration-none">
+          <img class="img-responsive center-block my-1 mx-3" src="{{this.Restaurant.image}}"
+            style="width: 60px;height: 60px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+
   </div>
 </div>
 

@@ -47,13 +47,37 @@ const userController = {
   },
   getUser: (req, res, next) => {
     const reqUser = getUser(req)
-    return User.findByPk(req.params.id, {
-      include: [{ model: Comment, include: Restaurant }],
-      order: [[{ model: Comment }, 'createdAt', 'DESC']]
-    })
-      .then(currentUser => {
+    return Promise.all([
+      User.findByPk(req.params.id, {
+        include: [{
+          model: Comment, include: Restaurant
+        },
+        {
+          model: User, as: 'Followers'
+        },
+        {
+          model: User, as: 'Followings'
+        },
+        {
+          model: Restaurant, as: 'FavoritedRestaurants'
+        }],
+        order: [[{ model: Comment }, 'createdAt', 'DESC']]
+      }),
+      Comment.findAll({
+        include: [Restaurant],
+        where: {
+          userId: req.params.id
+        },
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([currentUser, comments]) => {
         if (!currentUser) throw new Error("User didn't exist!")
-        return res.render('users/profile', { user: reqUser, currentUser: currentUser.toJSON() })
+        // console.log(comments.Restaurant)
+        const set = new Set()
+        const commentedRests = comments.filter(comment => !set.has(comment.Restaurant.id) ? set.add(comment.Restaurant.id) : false)
+        return res.render('users/profile', { user: reqUser, currentUser: currentUser.toJSON(), commentedRests })
       })
       .catch(err => next(err))
   },
