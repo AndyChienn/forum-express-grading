@@ -1,4 +1,6 @@
-const path = require('path')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const express = require('express')
 const handlebars = require('express-handlebars') // 引入 express-handlebars
 const flash = require('connect-flash')
@@ -6,12 +8,10 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers') // 引入 handlebars-helpers
+const path = require('path')
 const { getUser } = require('./helpers/auth-helpers') // 增加這行，引入自定義的 auth-helpers
 // const routes = require('./routes')
 const { pages, apis } = require('./routes')
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
 
 const app = express()
 const port = process.env.PORT || 3000
